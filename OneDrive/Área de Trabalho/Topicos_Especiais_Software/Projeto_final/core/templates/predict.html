@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Realizar Predição{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Realizar Predição</h2>
+    <p>Responda às perguntas abaixo, atribuindo valores de 0 (Discordo Totalmente) a 4 (Concordo Totalmente):</p>
+
+    <!-- Botões no topo -->
+    <div class="d-flex justify-content-between mb-4">
+        <button type="button" class="btn btn-secondary" id="auto-fill-top">Preencher Automaticamente</button>
+        <button type="submit" form="prediction-form" class="btn btn-primary">Predizer</button>
+    </div>
+
+    <form method="POST" id="prediction-form">
+        {% csrf_token %}
+
+        <!-- Campo de Perguntas -->
+        {% for question in questions %}
+        <div class="form-group">
+            <label for="q{{ question.question_number }}">
+                {{ question.question_number }} - {{ question.question_text }}
+            </label>
+            <select id="q{{ question.question_number }}" name="q{{ question.question_number }}" class="form-control">
+                {% for value in value_range %}
+                <option value="{{ value }}">{{ value }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endfor %}
+    </form>
+
+    <!-- Botões no final -->
+    <div class="d-flex justify-content-between mt-4">
+        <button type="button" class="btn btn-secondary" id="auto-fill-bottom">Preencher Automaticamente</button>
+        <button type="submit" form="prediction-form" class="btn btn-primary">Predizer</button>
+    </div>
+
+    <!-- Modal para exibir resultado -->
+    <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">Resultado da Predição</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% if divorce_probability is not None %}
+                    <p><strong>Probabilidade de Divórcio:</strong> {{ divorce_probability|floatformat:2 }}%</p>
+                    {% endif %}
+                    {% if error %}
+                    <p class="text-danger"><strong>Erro:</strong> {{ error }}</p>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts necessários -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Script para preencher automaticamente os campos com valores aleatórios
+    function autoFillFields() {
+        const form = document.getElementById('prediction-form');
+        for (let i = 1; i <= 54; i++) {
+            const select = form.querySelector(`#q${i}`);
+            if (select) {
+                select.value = Math.floor(Math.random() * 5); // Gera um valor entre 0 e 4
+            }
+        }
+    }
+
+    // Associar o auto-fill aos botões
+    document.getElementById('auto-fill-top').addEventListener('click', autoFillFields);
+    document.getElementById('auto-fill-bottom').addEventListener('click', autoFillFields);
+
+    // Mostrar o modal automaticamente se houver um resultado
+    {% if divorce_probability is not None or error %}
+    $(document).ready(function() {
+        $('#resultModal').modal('show');
+    });
+    {% endif %}
+</script>
+{% endblock %}

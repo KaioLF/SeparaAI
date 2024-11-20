@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Configuração de Predição{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Configuração de Predição</h2>
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Escolha do Algoritmo -->
+        <div class="form-group">
+            <label for="algorithm">Escolha o Algoritmo de Machine Learning:</label>
+            <select id="algorithm" name="algorithm" class="form-control" required>
+                <option value="random_forest">Random Forest</option>
+                <option value="logistic_regression">Regressão Logística</option>
+                <option value="knn">K-Nearest Neighbors (KNN)</option>
+            </select>
+        </div>
+
+        <!-- Configurações de Parâmetros -->
+        <div id="parameters" class="mt-4">
+            <!-- Parâmetros de Random Forest -->
+            <div id="random_forest_params" style="display: none;">
+                <h5>Parâmetros para Random Forest</h5>
+                <div class="form-group">
+                    <label for="max_depth">Profundidade Máxima da Árvore:</label>
+                    <input type="number" id="max_depth" name="max_depth" class="form-control" placeholder="Ex.: 10">
+                </div>
+                <div class="form-group">
+                    <label for="n_estimators">Número de Árvores (n_estimators):</label>
+                    <input type="number" id="n_estimators" name="n_estimators" class="form-control" placeholder="Ex.: 100">
+                </div>
+            </div>
+
+            <!-- Parâmetros de KNN -->
+            <div id="knn_params" style="display: none;">
+                <h5>Parâmetros para KNN</h5>
+                <div class="form-group">
+                    <label for="n_neighbors">Número de Vizinhos (n_neighbors):</label>
+                    <input type="number" id="n_neighbors" name="n_neighbors" class="form-control" placeholder="Ex.: 5">
+                </div>
+            </div>
+
+            <!-- Parâmetros de Regressão Logística -->
+            <div id="logistic_regression_params" style="display: none;">
+                <h5>Parâmetros para Regressão Logística</h5>
+                <div class="form-group">
+                    <label for="penalty">Penalidade:</label>
+                    <select id="penalty" name="penalty" class="form-control">
+                        <option value="l2">L2</option>
+                        <option value="none">Nenhuma</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="max_iter">Número Máximo de Iterações (max_iter):</label>
+                    <input type="number" id="max_iter" name="max_iter" class="form-control" placeholder="Ex.: 100">
+                </div>
+            </div>
+        </div>
+
+        <!-- Botão de Enviar -->
+        <button type="submit" class="btn btn-primary mt-4">Treinar Modelo</button>
+    </form>
+    <!-- Exibir o Resultado do Treinamento -->
+    {% if result %}
+    <div class="alert alert-success mt-4">
+        <h3>Modelo Treinado com Sucesso!</h3>
+        <p><strong>Algoritmo Selecionado:</strong> {{ result.algorithm }}</p>
+        <p><strong>Precisão do Modelo:</strong> {{ result.accuracy|floatformat:2 }}%</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Script para exibir os parâmetros conforme o algoritmo selecionado
+    document.getElementById('algorithm').addEventListener('change', function () {
+        const selected = this.value;
+        document.getElementById('random_forest_params').style.display = selected === 'random_forest' ? 'block' : 'none';
+        document.getElementById('knn_params').style.display = selected === 'knn' ? 'block' : 'none';
+        document.getElementById('logistic_regression_params').style.display = selected === 'logistic_regression' ? 'block' : 'none';
+    });
+</script>
+{% endblock %}

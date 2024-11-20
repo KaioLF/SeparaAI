@@ -1,0 +1,25 @@
+# Sistema
+*.log
+*.pot
+*.pyc
+__pycache__/
+
+# Banco de Dados
+db.sqlite3
+
+# Virtualenv
+.venv/
+env/
+*.env
+
+# Arquivos Estáticos e de Mídia
+/static/
+media/
+
+# Configuração do Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Configuração de IDEs
+.idea/
+.vscode/

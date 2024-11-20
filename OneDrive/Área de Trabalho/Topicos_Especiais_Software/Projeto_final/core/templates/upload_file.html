@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload CSV{% endblock %}
+
+{% block content %}
+<h2>Carregar arquivo CSV</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</form>
+
+{% if data %}
+    <h3>Pré-visualização dos dados</h3>
+    {{ data|safe }}
+{% endif %}
+{% endblock %}
