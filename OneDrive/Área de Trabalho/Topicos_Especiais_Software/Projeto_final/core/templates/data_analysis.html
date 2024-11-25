@@ -1,6 +1,30 @@
 {% extends 'base.html' %}
 
+{% block title %}Análise de Dados{% endblock %}
+
 {% block content %}
 <h2>Análise de Dados</h2>
-<img src="data:image/png;base64,{{ graphic }}" alt="Gráfico">
+
+<!-- Exibir matriz de correlação -->
+{% if correlation_matrix_html %}
+    <h3>Matriz de Correlação</h3>
+    <div>
+        {{ correlation_matrix_html|safe }}
+    </div>
+{% endif %}
+
+<!-- Exibir distribuição de respostas por pergunta -->
+{% if response_distribution_html %}
+    <h3>Distribuição das Respostas por Pergunta</h3>
+    <div>
+        {{ response_distribution_html|safe }}
+    </div>
+{% endif %}
+
+{% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+{% endif %}
+
 {% endblock %}

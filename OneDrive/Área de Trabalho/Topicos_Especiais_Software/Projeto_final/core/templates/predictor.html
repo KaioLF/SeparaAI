@@ -5,9 +5,9 @@
 {% block content %}
 <div class="container">
     <h2>Configuração de Predição</h2>
-    <form method="POST">
+    <form method="POST" action="">
         {% csrf_token %}
-        
+
         <!-- Escolha do Algoritmo -->
         <div class="form-group">
             <label for="algorithm">Escolha o Algoritmo de Machine Learning:</label>
@@ -59,16 +59,38 @@
             </div>
         </div>
 
-        <!-- Botão de Enviar -->
-        <button type="submit" class="btn btn-primary mt-4">Treinar Modelo</button>
+        <!-- Botões -->
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Treinar Modelo</button>
+            <a href="?retrain=true" class="btn btn-secondary">Retreinar Modelo</a>
+        </div>
     </form>
+
     <!-- Exibir o Resultado do Treinamento -->
     {% if result %}
-    <div class="alert alert-success mt-4">
-        <h3>Modelo Treinado com Sucesso!</h3>
-        <p><strong>Algoritmo Selecionado:</strong> {{ result.algorithm }}</p>
-        <p><strong>Precisão do Modelo:</strong> {{ result.accuracy|floatformat:2 }}%</p>
+    <h3>Resultados do Modelo</h3>
+    <p><strong>Acurácia:</strong> {{ result.accuracy }}</p>
+    <pre>{{ result.classification_report }}</pre>
+
+    <h3>Matriz de Confusão</h3>
+    <div>
+        {{ result.confusion_matrix_html|safe }}
     </div>
+
+    <h3>Curva ROC</h3>
+    <div>
+        {{ result.roc_curve_html|safe }}
+    </div>
+    
+    <div>
+        <h3>Importância das Variáveis</h3>
+        {% if result.feature_importance_html %}
+            <div>{{ result.feature_importance_html|safe }}</div>
+        {% else %}
+            <p>O algoritmo selecionado não suporta a geração do gráfico de importância das variáveis.</p>
+        {% endif %}
+    </div>
+
     {% endif %}
 </div>
 

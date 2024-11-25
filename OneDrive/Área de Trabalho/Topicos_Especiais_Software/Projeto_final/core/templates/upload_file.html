@@ -10,8 +10,11 @@
     <button type="submit" class="btn btn-primary">Enviar</button>
 </form>
 
-{% if data %}
-    <h3>Pré-visualização dos dados</h3>
-    {{ data|safe }}
+{% if target_distribution_plot %}
+    <h3>Distribuição do Target</h3>
+    <div>
+        {{ target_distribution_plot|safe }}
+    </div>
 {% endif %}
+
 {% endblock %}

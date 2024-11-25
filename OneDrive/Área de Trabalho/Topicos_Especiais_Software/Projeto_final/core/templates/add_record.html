@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Adicionar Registro ao Dataset{% endblock %}
+
+{% block content %}
+<h2>Adicionar Registro ao Dataset</h2>
+<form method="POST">
+    {% csrf_token %}
+
+    <!-- Campo de Perguntas -->
+    {% for question in questions %}
+    <div class="form-group">
+        <label for="q{{ question.question_number }}">
+            {{ question.question_number }} - {{ question.question_text }}
+        </label>
+        <select id="q{{ question.question_number }}" name="q{{ question.question_number }}" class="form-control" required>
+            {% for value in value_range %}
+            <option value="{{ value }}">{{ value }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    {% endfor %}
+
+    <!-- Campo para o Target -->
+    <div class="form-group">
+        <label for="divorce">Divorce:</label>
+        <select id="divorce" name="divorce" class="form-control" required>
+            <option value="0">Não Divórcio</option>
+            <option value="1">Divórcio</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar Registro</button>
+</form>
+
+{% if success_message %}
+<div class="alert alert-success">{{ success_message }}</div>
+{% endif %}
+{% if error_message %}
+<div class="alert alert-danger">{{ error_message }}</div>
+{% endif %}
+{% endblock %}
